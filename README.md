@@ -1,4 +1,4 @@
-#Application Log
+#Silex Application Log
 
 ###require
 
