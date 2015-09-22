@@ -1,5 +1,5 @@
 {
-  "name": "coderockr/application-log",
+  "name": "coderockr/silex-application-log",
   "description": "Application log",
   "minimum-stability": "dev",
   "require": {
