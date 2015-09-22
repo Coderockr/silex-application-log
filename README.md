@@ -1,0 +1,1 @@
+# silex-application-log
