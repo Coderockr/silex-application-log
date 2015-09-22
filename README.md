@@ -49,5 +49,7 @@ Keys `processor`, `streamHandler`, `slackHandler` and `logglyHandler` opcional
         )
     );
 
+###Usage
+
     $app = new Application();
     $app->register(new \ApplicationLog\Provider\ApplicationLog(), $config);
