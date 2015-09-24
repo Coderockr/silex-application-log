@@ -6,7 +6,7 @@
 
 ###Install
 
-    php composer.phar require coderocker/application-log
+    php composer.phar require silex-coderocker/application-log
 
 ###Configuration
 
