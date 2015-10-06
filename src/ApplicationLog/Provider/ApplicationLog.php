@@ -21,7 +21,7 @@ class ApplicationLog implements ServiceProviderInterface
         };
 
         $app['monolog'] = $app->share(function () use ($app) {
-            
+
             if (!isset($app['config']) || !isset($app['config']['applicationLog'])) {
                 throw new \InvalidArgumentException("Config error");
             }
@@ -66,49 +66,65 @@ class ApplicationLog implements ServiceProviderInterface
 
     public function getStreamHandler($config)
     {
-        $stream = isset($config['stream']) ? $config['stream'] : 'php://stderr';
-        $level = isset($config['level']) ? $config['level'] : 'DEBUG';
-        $bubble = isset($config['bubble']) ? $config['bubble'] : true;
-        $filePermission = isset($config['filePermission']) ? $config['filePermission'] : null;
-        $useLocking = isset($config['useLocking']) ? $config['useLocking'] : false;
+        $default = [
+            'stream' => 'php://stderr',
+            'level' => 'DEBUG',
+            'bubble' => true,
+            'filePermission' => null,
+            'useLocking' => false
+        ];
 
-        return new StreamHandler($stream, $this->translateLevel($level), $bubble, $filePermission, $useLocking);
+        $data = array_merge($default, $config);
+
+        return new StreamHandler(
+            $data['stream'],
+            $this->translateLevel($data['level']),
+            $data['bubble'],
+            $data['filePermission'],
+            $data['useLocking']
+        );
     }
 
     public function getSlackHandler($config)
     {
-        $token = isset($config['token']) ? $config['token'] : '';
-        $channel = isset($config['channel']) ? $config['channel'] : '';
-        $username = isset($config['username']) ? $config['username'] : 'Monolog';
-        $useAttachment = isset($config['useAttachment']) ? $config['useAttachment'] : true;
-        $iconEmoji = isset($config['iconEmoji']) ? $config['iconEmoji'] : null;
-        $level = isset($config['level']) ? $config['level'] : 'CRITICAL';
-        $bubble = isset($config['bubble']) ? $config['bubble'] : true;
-        $useShortAttachment = isset($config['useShortAttachment']) ? $config['useShortAttachment'] : false;
-        $includeContextAndExtra = isset($config['includeContextAndExtra']) ? $config['includeContextAndExtra'] : false;
+        $default = [
+            'token' => null,
+            'channel' => null,
+            'username' => 'Monolog',
+            'useAttachment' => true,
+            'iconEmoji' => null,
+            'level' => 'CRITICAL',
+            'bubble' => true,
+            'useShortAttachment' => false,
+            'includeContextAndExtra' => false
+        ];
+
+        $data = array_merge($default, $config);
 
         return new SlackHandler(
-            $token,
-            $channel,
-            $username,
-            $useAttachment,
-            $iconEmoji,
-            $this->translateLevel($level),
-            $bubble,
-            $useShortAttachment,
-            $includeContextAndExtra
+            $data['token'],
+            $data['channel'],
+            $data['username'],
+            $data['useAttachment'],
+            $data['iconEmoji'],
+            $this->translateLevel($data['level']),
+            $data['bubble'],
+            $data['useShortAttachment'],
+            $data['includeContextAndExtra']
         );
     }
 
     public function getLogglyHandler($config)
     {
-        $token = isset($config['token']) ? $config['token'] : '';
-        $level = isset($config['level']) ? $config['level'] : 'DEBUG';
-        $bubble = isset($config['bubble']) ? $config['bubble'] : true;
+        $default = [
+            'token' => null,
+            'level' => 'DEBUG',
+            'bubble' => true
+        ];
 
-        $logglyhandler = new LogglyHandler($token, ApplicationLog::translateLevel($level), $bubble);
+        $data = array_merge($default, $config);
 
-        return $logglyhandler;
+        return new LogglyHandler($data['token'], $this->translateLevel($data['level']), $data['bubble']);
     }
 
     /**
