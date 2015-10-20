@@ -1,3 +1,5 @@
+[![Codacy Badge](https://api.codacy.com/project/badge/84ca7d0251cb4be8ae819ada7e973118)](https://www.codacy.com/app/eminetto/silex-application-log)
+
 #Silex Application Log
 
 ###require
