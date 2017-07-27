@@ -7,6 +7,7 @@ use Silex\Application;
 use Monolog\Handler\SlackHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Handler\LogglyHandler;
+use Monolog\Handler\RavenHandler;
 use Silex\ServiceProviderInterface;
 
 class ApplicationLog implements ServiceProviderInterface
@@ -60,6 +61,10 @@ class ApplicationLog implements ServiceProviderInterface
                 $logger->pushHandler($this->getLogglyHandler($app['config']['applicationLog']['logglyHandler']));
             }
 
+            if (isset($app['config']['applicationLog']['sentryHandler'])) {
+                $logger->pushHandler($this->getSentryHandler($app['config']['applicationLog']['sentryHandler']));
+            }
+
             return $logger;
         });
     }
@@ -111,6 +116,26 @@ class ApplicationLog implements ServiceProviderInterface
             $data['bubble'],
             $data['useShortAttachment'],
             $data['includeContextAndExtra']
+        );
+    }
+
+    public function getSentryHandler($config)
+    {
+        $default = [
+            'token' => null,
+            'level' => 'CRITICAL',
+            'includeContextAndExtra' => true,
+            'bubble' => true,
+        ];
+
+        $data = array_merge($default, $config);
+
+        $client = new \Raven_Client($data['token']);
+
+        return new RavenHandler(
+            $client,
+            $this->translateLevel($data['level']),
+            $data['bubble']
         );
     }
 

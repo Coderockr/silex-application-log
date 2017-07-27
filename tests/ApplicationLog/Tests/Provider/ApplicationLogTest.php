@@ -9,6 +9,7 @@ use Silex\Application;
 use Monolog\Handler\SlackHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Handler\LogglyHandler;
+use Monolog\Handler\RavenHandler;
 use ApplicationLog\Provider\ApplicationLog;
 
 class ApplicationLogTest extends \PHPUnit_Framework_TestCase 
@@ -88,6 +89,21 @@ class ApplicationLogTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf(SlackHandler::class, $stream);
     }
 
+    public function testMethodGetSentryHandler()
+    {
+        $config = [
+            'token' => 'https://sddsdsds:dsdsds@sentry.io/12121',
+            'level' => 'CRITICAL',
+            'bubble' => true,
+            'includeContextAndExtra' => false
+        ];
+
+        $applicationLog = new ApplicationLog();
+        $stream = $applicationLog->getSentryHandler($config);
+
+        $this->assertInstanceOf(RavenHandler::class, $stream);
+    }
+
     public function testMethodGetSlackHandlerDefaultParameters()
     {
         $config = [];
@@ -133,7 +149,7 @@ class ApplicationLogTest extends \PHPUnit_Framework_TestCase
      * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage Config error
      */
-    public function testShareMonologReturnExceptionNotParamete()
+    public function testShareMonologReturnExceptionNotParameter()
     {
         $app = new Application();
         $app->register(new ApplicationLog());
@@ -226,6 +242,29 @@ class ApplicationLogTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals('foo-loggly', $logger->getName());
         $this->assertInstanceOf(LogglyHandler::class, $logger->popHandler());
+    }
+
+    public function testShareMonologConfigSentryHandler()
+    {
+        $config = [
+            'config' => [
+                'applicationLog' => [
+                    'name' => 'foo-sentry',
+                    'sentryHandler' => []
+                ]
+            ]
+        ];
+
+        $app = new Application();
+        $app->register(new ApplicationLog(), $config);
+
+        /**
+         * @var $logger \Monolog\Logger
+         */
+        $logger = $app['monolog'];
+
+        $this->assertEquals('foo-sentry', $logger->getName());
+        $this->assertInstanceOf(RavenHandler::class, $logger->popHandler());
     }
 
     public function testShareLogger()

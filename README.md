@@ -1,37 +1,37 @@
 [![Codacy Badge](https://api.codacy.com/project/badge/84ca7d0251cb4be8ae819ada7e973118)](https://www.codacy.com/app/eminetto/silex-application-log)
 
-#Silex Application Log
+# Silex Application Log
 
-###require
+### Require
 
 `"silex/silex": "v1.3.4"` and `"monolog/monolog": "^1.17"`
 
-###Install
+### Install
 
     php composer.phar require coderockr/silex-application-log
 
-###Configuration
+### Configuration
 
 Keys `processor`, `streamHandler`, `slackHandler` and `logglyHandler` opcional
 
-    $config = array(
-        'config' => array(
-            'applicationLog' => array(
+    $config = [
+        'config' => [
+            'applicationLog' => [
                 'name' => 'Name You Log',
-                'processor' => array( //opcional
+                'processor' => [ //opcional
                     'Monolog\Processor\IntrospectionProcessor',
                     'Monolog\Processor\MemoryUsageProcessor',
                     'Monolog\Processor\ProcessIdProcessor',
                     'Monolog\Processor\WebProcessor',
-                ),
-                'streamHandler' => array(
+                ],
+                'streamHandler' => [
                     'stream' => 'path/to/application.log',
                     'level' => 'DEBUG', //opcional
                     'bubble' => true, //opcional
                     'filePermission' => null, //opcional
                     'useLocking' => false //opcional
-                ),
-                'slackHandler' => array(
+                ],
+                'slackHandler' => [
                     'token' => '1234567890',
                     'channel' => '#tests',
                     'username' => 'tests', //opcional
@@ -41,17 +41,21 @@ Keys `processor`, `streamHandler`, `slackHandler` and `logglyHandler` opcional
                     'bubble' => true, //opcional
                     'useShortAttachment' => false, //opcional
                     'includeContextAndExtra' => false //opcional
-                ),
-                'logglyHandler' => array(
+                ],
+                'logglyHandler' => [
                     'token' => '1234567890',
                     'level' => 'ERROR', //opcional
                     'bubble' => true //opcional
-                )
-            )
-        )
-    );
+                ],
+                'sentryHandler' => [
+                    'token' => '1234567890',
+                    'level' => 'ERROR', //opcional
+                ],
+            ]
+        ]
+    ];
 
-###Usage
+### Usage
 
     $app = new Application();
     $app->register(new \ApplicationLog\Provider\ApplicationLog(), $config);
